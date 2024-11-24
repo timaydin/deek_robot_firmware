@@ -17,7 +17,7 @@ static void ht1621b_write_data(unsigned int data, unsigned int bitcount)
         --bitcount;
 
         unsigned int i;
-        for (i = bitcount; i > 0; --i)
+        for (i = bitcount; i >= 0; --i)
         {
             HT1621B_DATA = !!(data & (1 << i));
             HT1621B_WR = 1;
