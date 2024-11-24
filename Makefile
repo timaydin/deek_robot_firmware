@@ -12,15 +12,16 @@ SOURCES := \
 	${BSP_DRVSRC}/sys.c \
 	${BSP_DRVSRC}/uart.c \
 	${BSP_DRVSRC}/sdcc_stdio.c \
+	printf_large.c \
 	main.c
 
 OBJECTS := $(notdir $(SOURCES:.c=.rel))
 
 vpath %.c $(dir $(SOURCES))
 
-CC := sdcc -c --model-small --debug -V -D__SDCC__ -I ${BSP_DEVINC} -I ${BSP_DRVINC}
+CC := sdcc -mmcs51 -c --model-large -V -D__SDCC__ -DUSE_FLOATS=1 -I ${BSP_DEVINC} -I ${BSP_DRVINC}
 
-LD := sdcc -mmcs51 --out-fmt-ihx --model-small
+LD := sdcc -mmcs51 --out-fmt-ihx --model-large
 
 %.rel: %.c
 	${CC} -c $< -o $@
