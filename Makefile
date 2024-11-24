@@ -20,9 +20,9 @@ OBJECTS := $(notdir $(SOURCES:.c=.rel))
 
 vpath %.c $(dir $(SOURCES))
 
-CC := sdcc --std-c11 -mmcs51 -c --model-large -V -D__SDCC__ -DUSE_FLOATS=1 -I ${BSP_DEVINC} -I ${BSP_DRVINC}
+CC := sdcc --std-c23 -mmcs51 -c --model-large -V -D__SDCC__ -DUSE_FLOATS=1 -I ${BSP_DEVINC} -I ${BSP_DRVINC}
 
-LD := sdcc --std-c11 -mmcs51 --out-fmt-ihx --model-large
+LD := sdcc --std-c23 -mmcs51 --out-fmt-ihx --model-large
 
 %.rel: %.c
 	${CC} -c $< -o $@
