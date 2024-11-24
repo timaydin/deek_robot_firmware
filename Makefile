@@ -9,10 +9,10 @@ BSP_DRVSRC := ${BSPROOT}/Library/StdDriver/src
 
 SOURCES := \
 	${BSP_DRVSRC}/common.c \
-	${BSP_DRVSRC}/sys.c \
-	${BSP_DRVSRC}/uart.c \
-	${BSP_DRVSRC}/sdcc_stdio.c \
 	printf_large.c \
+	adc.c \
+	debug_log.c \
+	console.c \
 	main.c
 
 OBJECTS := $(notdir $(SOURCES:.c=.rel))
