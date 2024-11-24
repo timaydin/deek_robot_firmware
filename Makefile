@@ -13,6 +13,7 @@ SOURCES := \
 	adc.c \
 	debug_log.c \
 	console.c \
+	util.c \
 	main.c
 
 OBJECTS := $(notdir $(SOURCES:.c=.rel))
