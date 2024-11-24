@@ -13,6 +13,7 @@ SOURCES := \
 	adc.c \
 	debug_log.c \
 	console.c \
+	lcd.c \
 	util.c \
 	main.c
 

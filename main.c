@@ -4,6 +4,7 @@
 #include "debug_log.h"
 #include "console.h"
 #include "adc.h"
+#include "lcd.h"
 #include "util.h"
 
 /***********************************************************************
@@ -20,6 +21,8 @@ void main(void)
     gpio_init();
 
     console_init(1000000);
+
+    lcd_init();
 
     adc_init();
 
