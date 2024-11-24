@@ -33,23 +33,20 @@ void main(void)
 
     adc_init();
 
-    while (1)
+    unsigned long i;
+    for (i = 0; i < 100000lu; ++i)
     {
         adc_task();
 
-        unsigned long i;
-        for (i = 0; i < 100000lu; ++i)
-        {
-            float voltage = adc_read_voltage();
+        float voltage = adc_read_voltage();
 
-            debug_log(1, "voltage = %f\n", voltage);
+        debug_log(1, "voltage = %f\n", voltage);
 
-            busy_loop_delay(30000);
-        }
+        busy_loop_delay(30000);
+    }
 
-        while (1)
-        {
-            ;
-        }
+    while (1)
+    {
+        ;
     }
 }
