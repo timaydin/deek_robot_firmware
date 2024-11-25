@@ -8,13 +8,27 @@
 #define HT1621B_CS   P01
 #define HT1621B_WR   P10
 
+#define LCD_BUILD_CMD(id, w1, w2, s) \
+    ((0b##id << 9) | (0b##w1 << 5) | (0b##w2 << 1) | 0b##s)
+
+#define SYS_EN           LCD_BUILD_CMD(100, 0000, 0001, 0)
+#define BIAS_12_2COMMONS LCD_BUILD_CMD(100, 0010, 0000, 0)
+#define BIAS_12_3COMMONS LCD_BUILD_CMD(100, 0010, 0100, 0)
+#define BIAS_12_4COMMONS LCD_BUILD_CMD(100, 0010, 1000, 0)
+#define BIAS_13_2COMMONS LCD_BUILD_CMD(100, 0010, 0001, 0)
+#define BIAS_13_3COMMONS LCD_BUILD_CMD(100, 0010, 0101, 0)
+#define BIAS_13_4COMMONS LCD_BUILD_CMD(100, 0010, 1001, 0)
 
 /***********************************************************************
  ***********************************************************************/
-static void ht1621b_write_data(unsigned int data, unsigned int bitcount)
+static void ht1621b_command(unsigned int data)
 {
-    unsigned int mask = 1 << bitcount;
+    debug_log(1, "data = 0x%04X\n", data);
 
+    HT1621B_CS = 0;
+
+    unsigned int bitcount = 12;
+    unsigned int mask = 1 << bitcount;
     for (unsigned int i = 0; i < bitcount; ++i)
     {
         mask >>= 1;
@@ -24,6 +38,8 @@ static void ht1621b_write_data(unsigned int data, unsigned int bitcount)
         busy_loop_delay(5);
         HT1621B_WR = 0;
     }
+
+    HT1621B_CS = 1;
 }
 
 /***********************************************************************
@@ -52,19 +68,15 @@ void lcd_set_current(float current)
  ***********************************************************************/
 void lcd_init(void)
 {
-    debug_log(1, "enter\n");
-
     P00_PUSHPULL_MODE;
     P01_PUSHPULL_MODE;
     P10_PUSHPULL_MODE;
 
+    ht1621b_command(SYS_EN);
+    ht1621b_command(BIAS_12_4COMMONS);
+
     while (1)
     {
-        HT1621B_CS = 0;
-        unsigned int lcd_on = 0b100000000110;
-        ht1621b_write_data(lcd_on, 12);
-        HT1621B_CS = 1;
-
-        busy_loop_delay(1000);
+        ;
     }
 }
