@@ -3,7 +3,7 @@
 #include "numicro_8051.h"
 #include "debug_log.h"
 
-#define RAVG_BUFCNT 40
+#define RAVG_BUFCNT 20
 
 typedef struct
 {
