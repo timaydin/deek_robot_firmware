@@ -6,8 +6,7 @@
  ***********************************************************************/
 void console_write(const char* buffer, unsigned int len)
 {
-    unsigned int i;
-    for (i = 0; i < len; ++i)
+    for (unsigned int i = 0; i < len; ++i)
     {
         while (TI == 0)
         {

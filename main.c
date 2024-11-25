@@ -26,8 +26,7 @@ void main(void)
 
     adc_init();
 
-    unsigned long i;
-    for (i = 0; i < 100000lu; ++i)
+    for (unsigned long i = 0; i < 100000lu; ++i)
     {
         adc_task();
 

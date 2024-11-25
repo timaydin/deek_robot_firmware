@@ -6,8 +6,7 @@
  ***********************************************************************/
 void busy_loop_delay(unsigned int count)
 {
-    unsigned int i;
-    for (i = 0; i < count; ++i)
+    for (unsigned int i = 0; i < count; ++i)
     {
         ;
     }
