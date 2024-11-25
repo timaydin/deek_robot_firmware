@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../N76E003_BSP/Library/Device/Include",
+                "${workspaceFolder}/../N76E003_BSP/Library/StdDriver/inc"
+            ],
+            "defines": [
+                "USE_FLOATS=1",
+                "__SDCC__"
+            ],
+            "cStandard": "c23",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "linux-gcc-x86",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "compilerPath": "/usr/local/bin/sdcc",
+            "compilerArgs": [
+                "-mmcs51"
+            ]
+        }
+    ],
+    "version": 4
+}

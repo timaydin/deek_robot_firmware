@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "numicro_8051.h": "c",
+        "debug_log.h": "c"
+    }
+}
