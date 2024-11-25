@@ -1,6 +1,7 @@
 /***********************************************************************
  ***********************************************************************/
 #include "numicro_8051.h"
+#include "debug_log.h"
 #include "util.h"
 
 #define HT1621B_DATA P00
@@ -12,18 +13,16 @@
  ***********************************************************************/
 static void ht1621b_write_data(unsigned int data, unsigned int bitcount)
 {
-    if (bitcount > 1)
-    {
-        --bitcount;
+    unsigned int mask = 1 << bitcount;
 
-        unsigned int i;
-        for (i = bitcount; i >= 0; --i)
-        {
-            HT1621B_DATA = !!(data & (1 << i));
-            HT1621B_WR = 1;
-            busy_loop_delay(10);
-            HT1621B_WR = 0;
-        }
+    for (unsigned int i = 0; i < bitcount; ++i)
+    {
+        mask >>= 1;
+        HT1621B_DATA = !!(data & mask);
+
+        HT1621B_WR = 1;
+        busy_loop_delay(5);
+        HT1621B_WR = 0;
     }
 }
 
@@ -53,17 +52,19 @@ void lcd_set_current(float current)
  ***********************************************************************/
 void lcd_init(void)
 {
+    debug_log(1, "enter\n");
+
     P00_PUSHPULL_MODE;
     P01_PUSHPULL_MODE;
     P10_PUSHPULL_MODE;
 
     while (1)
     {
-        busy_loop_delay(1000);
-
         HT1621B_CS = 0;
-        unsigned int lcd_on = 0b10000000110;
+        unsigned int lcd_on = 0b100000000110;
         ht1621b_write_data(lcd_on, 12);
         HT1621B_CS = 1;
+
+        busy_loop_delay(1000);
     }
 }
