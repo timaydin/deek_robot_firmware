@@ -4,9 +4,9 @@
 
 /***********************************************************************
  ***********************************************************************/
-void busy_loop_delay(unsigned int count)
+void busy_loop_delay(unsigned long count)
 {
-    for (unsigned int i = 0; i < count; ++i)
+    for (unsigned long i = 0; i < count; ++i)
     {
         ;
     }

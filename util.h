@@ -3,6 +3,6 @@
 #ifndef _H_UTIL
 #define _H_UTIL
 
-void busy_loop_delay(unsigned int count);
+void busy_loop_delay(unsigned long count);
 
 #endif
