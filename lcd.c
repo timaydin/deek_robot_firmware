@@ -183,10 +183,37 @@ static void lcd_set_celsius(unsigned char celsius)
 
 /***********************************************************************
  ***********************************************************************/
-static void lcd_set_dp(unsigned char digit,
-                       unsigned char dp)
+static void lcd_display_value(unsigned char line, float fvalue)
 {
-    update_disp_buffer(digit, 0x18, dp);
+    unsigned char digit = line * 3;
+
+    unsigned long lvalue;
+    if (fvalue < 10)
+    {
+        lvalue = fvalue * 100 + 0.5;
+        lcd_set_sym(digit + 1, 0);
+        lcd_set_sym(digit + 2, 1);
+    }
+    else if (fvalue < 100)
+    {
+        lvalue = fvalue * 10 + 0.5;
+        lcd_set_sym(digit + 1, 1);
+        lcd_set_sym(digit + 2, 0);
+    }
+    else
+    {
+        lvalue = fvalue + 0.5;
+        lcd_set_sym(digit + 1, 0);
+        lcd_set_sym(digit + 2, 0);
+    }
+
+    lcd_set_digit(digit, lvalue % 10);
+    lvalue /= 10;
+    lcd_set_digit(digit + 1, lvalue % 10);
+    lvalue /= 10;
+    lcd_set_digit(digit + 2, lvalue % 10);
+
+    ht1621b_write_disp_buffer(disp_buffer);
 }
 
 /***********************************************************************
@@ -227,32 +254,8 @@ void lcd_init(void)
     ht1621b_command(BIAS_13_4COMMONS, 12);
 
     memset(disp_buffer, 0x00, sizeof(disp_buffer));
-    ht1621b_write_disp_buffer(disp_buffer);
 
-    for (unsigned char digit = 0; digit < 9; ++digit)
-    {
-        for (unsigned int i = 0; i < 10; ++i)
-        {
-            lcd_set_digit(digit, i);
-            ht1621b_write_disp_buffer(disp_buffer);
-
-            busy_loop_delay(200000);
-        }
-    }
-
-    for (unsigned char digit = 0; digit < 10; ++digit)
-    {
-        lcd_set_sym(digit, 1);
-        ht1621b_write_disp_buffer(disp_buffer);
-
-        busy_loop_delay(200000);
-    }
-
-    lcd_set_celsius(1);
-    ht1621b_write_disp_buffer(disp_buffer);
-
-    while (1)
-    {
-        ;
-    }
+    lcd_set_sym(0, 1);
+    lcd_set_sym(3, 1);
+    lcd_set_sym(6, 1);
 }
