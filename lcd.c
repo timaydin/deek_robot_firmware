@@ -220,22 +220,21 @@ static void lcd_display_value(unsigned char line, float fvalue)
  ***********************************************************************/
 void lcd_set_voltage(float voltage)
 {
-    /* TODO: implement */
-    if (voltage > 0)
-    {
-        ;
-    }
+    lcd_display_value(2, voltage);
 }
 
 /***********************************************************************
  ***********************************************************************/
 void lcd_set_current(float current)
 {
-    /* TODO: implement */
-    if (current > 0)
-    {
-        ;
-    }
+    lcd_display_value(1, current);
+}
+
+/***********************************************************************
+ ***********************************************************************/
+void lcd_set_power(float power)
+{
+    lcd_display_value(0, power);
 }
 
 /***********************************************************************
@@ -258,4 +257,6 @@ void lcd_init(void)
     lcd_set_sym(0, 1);
     lcd_set_sym(3, 1);
     lcd_set_sym(6, 1);
+
+    ht1621b_write_disp_buffer(disp_buffer);
 }

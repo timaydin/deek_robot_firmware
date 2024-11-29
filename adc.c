@@ -8,7 +8,7 @@
 typedef struct
 {
     unsigned int buffer[RAVG_BUFCNT];
-    unsigned int index;
+    unsigned char index;
     unsigned long sum;
 
 } RAVG;
@@ -17,8 +17,8 @@ static float adc_vdd;
 static RAVG ravg_voltage;
 static RAVG ravg_current;
 
-#define SCALE_VOLTAGE 1.0
-#define SCALE_CURRENT 1.0
+#define SCALE_VOLTAGE 35.075
+#define SCALE_CURRENT 5.5928
 
 
 /***********************************************************************
@@ -118,14 +118,6 @@ void adc_task(void)
 
 /***********************************************************************
  ***********************************************************************/
-static float adc_read(RAVG* ravg, float scale)
-{
-    float value = ravg_average(ravg) * adc_vdd / 4095.0 * scale;
-    return value;
-}
-
-/***********************************************************************
- ***********************************************************************/
 float adc_read_voltage(void)
 {
     return (float)ravg_average(&ravg_voltage) * adc_vdd / 4095.0 * SCALE_VOLTAGE;
@@ -146,7 +138,7 @@ void adc_init(void)
     unsigned int bg_actual = adc_bandgap_actual();
 
     float vbg = 3072.0 * bg_stored / 4096.0;
-    adc_vdd = 4095.0 / bg_actual * vbg;
+    adc_vdd = 4095.0 / bg_actual * vbg / 1000.0;
 
     debug_log(1, "bgs = %u, bga = %u, vbg = %f, vdd = %f\n",
               bg_stored, bg_actual, vbg, adc_vdd);

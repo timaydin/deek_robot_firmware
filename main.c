@@ -26,19 +26,28 @@ void main(void)
 
     adc_init();
 
-    for (unsigned long i = 0; i < 100000lu; ++i)
+    unsigned int count = 0;
+    while (1)
     {
         adc_task();
 
-        float voltage = adc_read_voltage();
+        if (count > 0)
+        {
+            --count;
+        }
+        else
+        {
+            count = 500;
 
-        debug_log(1, "voltage = %f\n", voltage);
+            float voltage = adc_read_voltage();
+            debug_log(1, "voltage = %f\n", voltage);
+            lcd_set_voltage(voltage);
 
-        busy_loop_delay(30000);
-    }
+            float current = adc_read_current();
+            debug_log(1, "current = %f\n", current);
+            lcd_set_current(current);
 
-    while (1)
-    {
-        ;
+            lcd_set_power(voltage * current);
+        }
     }
 }
