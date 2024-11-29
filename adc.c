@@ -148,6 +148,6 @@ void adc_init(void)
     float vbg = 3072.0 * bg_stored / 4096.0;
     adc_vdd = 4095.0 / bg_actual * vbg;
 
-    debug_log(1, "bg_stored = %u, bg_actual = %u, vbg = %f mV, adc_vdd = %f mV\n",
+    debug_log(1, "bgs = %u, bga = %u, vbg = %f, vdd = %f\n",
               bg_stored, bg_actual, vbg, adc_vdd);
 }
