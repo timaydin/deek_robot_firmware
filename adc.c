@@ -17,8 +17,11 @@ static float adc_vdd;
 static RAVG ravg_voltage;
 static RAVG ravg_current;
 
-#define SCALE_VOLTAGE 35.075
-#define SCALE_CURRENT 5.5928
+#define OFFSET_VOLTAGE 0.020
+#define SCALE_VOLTAGE 1
+
+#define OFFSET_CURRENT 0.100
+#define SCALE_CURRENT 1
 
 
 /***********************************************************************
@@ -120,14 +123,18 @@ void adc_task(void)
  ***********************************************************************/
 float adc_read_voltage(void)
 {
-    return (float)ravg_average(&ravg_voltage) * adc_vdd / 4095.0 * SCALE_VOLTAGE;
+    float value = ravg_average(&ravg_voltage) * adc_vdd / 4095.0 - OFFSET_VOLTAGE;
+
+    return value * SCALE_VOLTAGE;
 }
 
 /***********************************************************************
  ***********************************************************************/
 float adc_read_current(void)
 {
-    return (float)ravg_average(&ravg_current) * adc_vdd / 4095.0 * SCALE_CURRENT;
+    float value = ravg_average(&ravg_current) * adc_vdd / 4095.0 - OFFSET_CURRENT;
+
+    return value * SCALE_CURRENT;
 }
 
 /***********************************************************************
