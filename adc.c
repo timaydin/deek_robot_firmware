@@ -17,12 +17,99 @@ static float adc_vdd;
 static RAVG ravg_voltage;
 static RAVG ravg_current;
 
-#define OFFSET_VOLTAGE 0.020
-#define SCALE_VOLTAGE 1
+#define OFFSET_VOLTAGE 0.016
+#define SCALE_VOLTAGE 39.96
 
 #define OFFSET_CURRENT 0.100
-#define SCALE_CURRENT 1
+#define SCALE_CURRENT 7.032
 
+static const float real_table_v[] =
+{
+    0.3,
+    0.4,
+    0.5,
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    10.0,
+    20.0,
+    40.0,
+    80.0,
+    100.0,
+};
+
+static const float adc_table_v[] =
+{
+    0.011,
+    0.02,
+    0.05,
+    0.274,
+    1.188,
+    2.214,
+    4.235,
+    9.11,
+    19.14,
+    39.31,
+    79.83,
+    100.14,
+};
+
+static const float real_table_i[] =
+{
+    0.05,
+    0.1,
+    0.2,
+    0.3,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    4.0,
+    8.0,
+    10.0,
+};
+
+static const float adc_table_i[] =
+{
+    0.057,
+    0.106,
+    0.207,
+    0.311,
+    0.527,
+    1.054,
+    1.55,
+    2.046,
+    4.01,
+    8.03,
+    10.1,
+};
+
+/***********************************************************************
+ ***********************************************************************/
+float interpolate(const float* real_table,
+                  const float* adc_table,
+                  unsigned int size,
+                  float adc_value)
+{
+    unsigned int i;
+    for (i = 0; i < (size - 1); i++)
+    {
+        if ((adc_table[i] <= adc_value) &&
+             adc_value < adc_table[i + 1])
+        {
+            break;
+        }
+    }
+
+    float adc_low = adc_table[i];
+    float adc_high = adc_table[i + 1];
+    float real_low = real_table[i];
+    float real_high = real_table[i + 1];
+
+    float real_value = real_low + ((adc_value - adc_low) / (adc_high - adc_low)) * (real_high - real_low);
+    return real_value;
+}
 
 /***********************************************************************
  ***********************************************************************/
@@ -119,22 +206,41 @@ void adc_task(void)
     ravg_run(&ravg_current, adc_read_current_raw());
 }
 
+/* #define _CALIBRATE_ */
+
 /***********************************************************************
  ***********************************************************************/
 float adc_read_voltage(void)
 {
-    float value = ravg_average(&ravg_voltage) * adc_vdd / 4095.0 - OFFSET_VOLTAGE;
+    float value = ravg_average(&ravg_voltage) * adc_vdd / 4095.0;
+    value = (value - OFFSET_VOLTAGE) * SCALE_VOLTAGE;
 
-    return value * SCALE_VOLTAGE;
+#ifndef _CALIBRATE_
+    value = interpolate(real_table_v,
+                        adc_table_v,
+                        sizeof(real_table_v) / sizeof(real_table_v[0]),
+                        value);
+#endif
+
+    return value;
 }
 
 /***********************************************************************
  ***********************************************************************/
 float adc_read_current(void)
 {
-    float value = ravg_average(&ravg_current) * adc_vdd / 4095.0 - OFFSET_CURRENT;
+    float value = ravg_average(&ravg_current) * adc_vdd / 4095.0;
+    value = (value - OFFSET_CURRENT) * SCALE_CURRENT;
 
-    return value * SCALE_CURRENT;
+#ifndef _CALIBRATE_
+    value = interpolate(real_table_i,
+                        adc_table_i,
+                        sizeof(real_table_i) / sizeof(real_table_i[0]),
+                        value);
+#endif
+
+
+    return value;
 }
 
 /***********************************************************************
